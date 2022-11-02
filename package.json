@@ -3,15 +3,48 @@
   "productName": "Image Resizer",
   "version": "1.0.0",
   "description": "Desktop App to resize images",
+  "author": "Ahmed Nabil",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "postinstall": "install-app-deps",
+    "start": "npm install && electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "author": "ahmednabil",
   "license": "ISC",
+  "build": {
+    "appId": "com.app.imageresizer",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "NSIS",
+      "icon": "build/icon.ico"
+    }
+  },
   "dependencies": {
-    "electron": "^21.2.1",
     "resize-img": "^2.0.0",
     "toastify-js": "^1.12.0"
+  },
+  "devDependencies": {
+    "electron": "^21.2.1",
+    "electron-builder": "^23.6.0"
   }
 }
