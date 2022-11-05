@@ -4,15 +4,19 @@ const os = require("os");
 const fs = require("fs");
 const resizeImg = require("resize-img");
 
+process.env.NODE_ENV = "production";
+
 const isDev = process.env.NODE_ENV !== "production";
 const isMac = process.platform === "darwin";
 
 let mainWindow;
+let aboutWindow;
 
 // Create Main Window
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     title: "Image Resizer",
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     width: isDev ? 1000 : 500,
     height: 600,
     webPreferences: {
@@ -34,6 +38,7 @@ function createMainWindow() {
 function createAboutWindow() {
   const aboutWindow = new BrowserWindow({
     title: "About Image Resizer",
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     width: 300,
     height: 300,
     webPreferences: {
@@ -103,25 +108,39 @@ const menu = [
         },
       ]
     : []),
+  ...(isDev
+    ? [
+        {
+          label: "Developer",
+          submenu: [
+            { role: "reload" },
+            { role: "forcereload" },
+            { type: "separator" },
+            { role: "toggledevtools" },
+          ],
+        },
+      ]
+    : []),
 ];
 
 // respond to ipcRenderer resize resize
 ipcMain.on("image:resize", (e, options) => {
+  console.log(options);
   options.dest = path.join(os.homedir(), "imageresizer");
   resizeImage(options);
 });
 
 async function resizeImage(options) {
   try {
-    const newPath = await resizeImg(fs.readFileSync(options.imgPath), {
+    const newPath = await resizeImg(fs.readFileSync(options.imagePath), {
       width: +options.width,
       height: +options.height,
     });
 
-    const fileName = path.basename(options.imgPath);
+    const fileName = path.basename(options.imagePath);
 
     if (!fs.existsSync(options.dest)) {
-      fs.mkdirSync(dest);
+      fs.mkdirSync(options.dest);
     }
 
     fs.writeFileSync(path.join(options.dest, fileName), newPath);
@@ -129,7 +148,9 @@ async function resizeImage(options) {
     mainWindow.webContents.send("image:done");
 
     shell.openPath(options.dest);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 app.on("window-all-closed", () => {

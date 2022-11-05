@@ -36,7 +36,7 @@
     },
     "win": {
       "target": "NSIS",
-      "icon": "build/icon.ico"
+      "icon": "assets/icons/Icon_256x256.png"
     }
   },
   "dependencies": {

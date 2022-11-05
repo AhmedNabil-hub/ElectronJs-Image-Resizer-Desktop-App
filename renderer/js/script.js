@@ -50,9 +50,9 @@ function sendImage(e) {
   });
 }
 
-ipcRenderer.on("image:done", () => {
-  alertSuccess(`Image resized to ${widthInput.value} x ${heightInput.value}`);
-});
+ipcRenderer.on("image:done", () =>
+  alertSuccess(`Image resized to ${widthInput.value} x ${heightInput.value}`)
+);
 
 function isFileImage(file) {
   const acceptedImageTypes = ["image/gif", "image/png", "image/jpeg"];
@@ -61,7 +61,7 @@ function isFileImage(file) {
 }
 
 function alertError(message) {
-  toastify.toast({
+  Toastify.toast({
     text: message,
     duration: 5000,
     close: false,
@@ -74,7 +74,7 @@ function alertError(message) {
 }
 
 function alertSuccess(message) {
-  toastify.toast({
+  Toastify.toast({
     text: message,
     duration: 5000,
     close: false,
